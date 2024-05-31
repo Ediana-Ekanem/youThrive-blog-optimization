@@ -3,20 +3,18 @@ import { Link } from "react-router-dom";
 
 const PageError = () => {
   return (
-    <>
-      <div className="flex flex-col  justify-center items-center h-screen">
-        <h1 className="text-3xl">404</h1>
-        <div className="text-lg mt-5">
-          <p>Oops! The page you're looking for doesn't exist.</p>
-          <p>It might have been moved or deleted.</p>
-        </div>
-        <ul className="mt-10 text-blue-700 font-semibold">
-          <li>
-            <Link to="/"> Go to Homepage</Link>
-          </li>
-        </ul>
-      </div>
-    </>
+    <main className="flex flex-col justify-center items-center h-screen bg-gray-100 text-gray-900">
+      <h1 className="text-4xl font-bold mb-4">404</h1>
+      <section className="text-center mb-6">
+        <p className="text-lg">
+          Oops! The page you're looking for doesn't exist.
+        </p>
+        <p className="text-lg">It might have been moved or deleted.</p>
+      </section>
+      <nav className="text-blue-700 font-semibold">
+        <Link to="/">Go to Homepage</Link>
+      </nav>
+    </main>
   );
 };
 

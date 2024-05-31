@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaUserCircle } from "react-icons/fa";
@@ -23,17 +23,53 @@ const Schema = Yup.object().shape({
     .required("Required"),
 });
 
+const InputField = ({
+  name,
+  type,
+  placeholder,
+  icon: Icon,
+  toggleVisibility,
+  showPassword,
+  error,
+  touched,
+}) => (
+  <fieldset className="mb-4">
+    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      {name.charAt(0).toUpperCase() + name.slice(1)}
+    </label>
+    <div className="relative flex items-center">
+      <Icon
+        className="absolute left-3 text-gray-400"
+        onClick={toggleVisibility}
+      />
+      <Field
+        name={name}
+        type={showPassword ? "text" : type}
+        placeholder={placeholder}
+        className={`block w-full pl-12 pr-3 py-2 border ${
+          touched && error ? "border-red-500" : "border-gray-300"
+        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+      />
+    </div>
+    <ErrorMessage
+      name={name}
+      component="div"
+      className="text-red-500 text-sm mt-1"
+    />
+  </fieldset>
+);
+
 export const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
 
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
+  const toggleConfirmPasswordVisibility = useCallback(() => {
+    setShowConfirmPassword((prev) => !prev);
+  }, []);
 
   return (
     <>
@@ -55,119 +91,42 @@ export const SignIn = () => {
           >
             {({ errors, touched }) => (
               <Form>
-                <fieldset className="mb-4">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Username
-                  </label>
-                  <div className="relative flex items-center">
-                    <FaUserCircle className="absolute left-3 text-gray-400" />
-                    <Field
-                      name="username"
-                      type="text"
-                      placeholder="Enter your username"
-                      className={`block w-full pl-12 pr-3 py-2 border ${
-                        touched.username && errors.username
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="username"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </fieldset>
-
-                <fieldset className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <div className="relative flex items-center">
-                    <MdEmail className="absolute left-3 text-gray-400" />
-                    <Field
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      className={`block w-full pl-12 pr-3 py-2 border ${
-                        touched.email && errors.email
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </fieldset>
-
-                <fieldset className="mb-4">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Password
-                  </label>
-                  <div className="relative flex items-center">
-                    <RiLockPasswordFill
-                      className="absolute left-3 text-gray-400 cursor-pointer"
-                      onClick={togglePasswordVisibility}
-                    />
-                    <Field
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                      className={`block w-full pl-12 pr-3 py-2 border ${
-                        touched.password && errors.password
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </fieldset>
-
-                <fieldset className="mb-6">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Confirm Password
-                  </label>
-                  <div className="relative flex items-center">
-                    <MdLockOutline
-                      className="absolute left-3 text-gray-400 cursor-pointer"
-                      onClick={toggleConfirmPasswordVisibility}
-                    />
-                    <Field
-                      name="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
-                      className={`block w-full pl-12 pr-3 py-2 border ${
-                        touched.confirmPassword && errors.confirmPassword
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </fieldset>
+                <InputField
+                  name="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  icon={FaUserCircle}
+                  error={errors.username}
+                  touched={touched.username}
+                />
+                <InputField
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  icon={MdEmail}
+                  error={errors.email}
+                  touched={touched.email}
+                />
+                <InputField
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  icon={RiLockPasswordFill}
+                  toggleVisibility={togglePasswordVisibility}
+                  showPassword={showPassword}
+                  error={errors.password}
+                  touched={touched.password}
+                />
+                <InputField
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  icon={MdLockOutline}
+                  toggleVisibility={toggleConfirmPasswordVisibility}
+                  showPassword={showConfirmPassword}
+                  error={errors.confirmPassword}
+                  touched={touched.confirmPassword}
+                />
 
                 <div className="text-center">
                   <button

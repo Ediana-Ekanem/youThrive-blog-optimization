@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import Card from "./Card";
 
-const Blog = () => {
+// Custom hook for data fetching
+const useFetchPosts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  // Fetching data
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -26,6 +25,13 @@ const Blog = () => {
     };
     fetchPosts();
   }, []);
+
+  return { posts, loading, error };
+};
+
+const Blog = () => {
+  const { posts, loading, error } = useFetchPosts();
+  const navigate = useNavigate();
 
   const handleBlogDetails = useCallback(
     (id) => {

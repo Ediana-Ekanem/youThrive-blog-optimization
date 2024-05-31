@@ -4,9 +4,8 @@ import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const BlogDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+// Custom hook for fetching a post
+const usePost = (id) => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,9 +16,9 @@ const BlogDetails = () => {
         `https://jsonplaceholder.typicode.com/posts/${id}`
       );
       setPost(response.data);
-      setLoading(false);
     } catch (err) {
       setError("Error occurred while fetching data.");
+    } finally {
       setLoading(false);
     }
   }, [id]);
@@ -27,6 +26,14 @@ const BlogDetails = () => {
   useEffect(() => {
     fetchPost();
   }, [fetchPost]);
+
+  return { post, loading, error };
+};
+
+const BlogDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { post, loading, error } = usePost(id);
 
   const handleBackClick = useCallback(() => {
     navigate("/blog");
